@@ -10,10 +10,10 @@ public class test {
 
 	public static void main(String[] args) {
 		try {
-			User user = new User("lofy","ahmed@gmail,com","zamri","ahmed", "123456");
+//			User user = new User("lofy","ahmed@gmail,com","zamri","ahmed", "123456");
 //			MySqlConnetion.insertUser(user);
 			
-			user.setNachname("najmi");
+//			user.setNachname("najmi");
 //			MySqlConnetion.updateUser(user, "nachname");
 			
 //			MySqlConnetion.deleteUser("lofy");
