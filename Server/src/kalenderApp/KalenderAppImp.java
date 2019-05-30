@@ -4,6 +4,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import utilities.News;
 import utilities.Termin;
@@ -59,19 +60,13 @@ public class KalenderAppImp extends UnicastRemoteObject implements KalenderApp {
 	}
 
 	@Override
-	public Termin searchTermin(int terminId) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Termin updateTermin(int terminId) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ArrayList<Termin> searchSpan(Date von, Date bis) throws RemoteException {
+	public List<Termin> searchSpan(Date von, Date bis) throws RemoteException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -82,11 +77,6 @@ public class KalenderAppImp extends UnicastRemoteObject implements KalenderApp {
 		return false;
 	}
 
-	@Override
-	public User searchUser(String userName, ArrayList<User> tab) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public ArrayList<News> getNews(User user) throws RemoteException {

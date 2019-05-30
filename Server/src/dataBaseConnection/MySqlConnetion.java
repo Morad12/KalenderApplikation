@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +68,7 @@ public class MySqlConnetion {
 		return newstab;
 	}
 	
-	public static User getUser(String username) throws Exception {
+	public static User searchUser(String username) throws Exception {
 		User user = new User();
 		Connection conn = getconnection();
 		PreparedStatement stam = conn.prepareStatement("SELECT * FROM user where username = ?");
@@ -86,7 +85,7 @@ public class MySqlConnetion {
 		return user;
 	}
 	
-	public static Termin getTermin(int terminId) throws Exception {
+	public static Termin searchTermin(int terminId) throws Exception {
 		Termin termin = new Termin();
 		Connection conn = getconnection();
 		PreparedStatement stam = conn.prepareStatement("SELECT * FROM termin where termin_id = ?");
@@ -102,7 +101,7 @@ public class MySqlConnetion {
 		return termin;
 	}
 	
-	public static News getNews(int newsId) throws Exception {
+	public static News searchNews(int newsId) throws Exception {
 		News news = new News();
 		Connection conn = getconnection();
 		PreparedStatement stam = conn.prepareStatement("SELECT * FROM news where news_id = ?");
@@ -165,16 +164,99 @@ public class MySqlConnetion {
 		conn.close();
 	}
 	
-	public static boolean updateUser(User user) {
-		return false;
+	public static void updateUser(User user, String where) throws Exception {
+		Connection conn = getconnection();
+		PreparedStatement preparedStmt = null;
+		
+		switch(where) {
+			case "email":
+				String query1 = "update user set email = ? where username = ?";		
+				preparedStmt = conn.prepareStatement(query1);
+				preparedStmt.setString(1, user.getEmail());
+				preparedStmt.setString(2, user.getUserName());
+				break;
+			case "nachname":
+				String query2 = "update user set nachname = ? where username = ?";
+				preparedStmt = conn.prepareStatement(query2);
+				preparedStmt.setString(1, user.getNachname());
+				preparedStmt.setString(2, user.getUserName());
+				break;
+			case "vorname":
+				String query3 = "update user set vorname = ? where username = ?";
+				preparedStmt = conn.prepareStatement(query3);
+				preparedStmt.setString(1, user.getVorname());
+				preparedStmt.setString(2, user.getUserName());
+				break;
+			case "passwort":
+				String query4 = "update user set passwort = ? where username = ?";
+				preparedStmt = conn.prepareStatement(query4);
+				preparedStmt.setString(1, user.getPasswort());
+				preparedStmt.setString(2, user.getUserName());
+				break;
+		}
+
+		preparedStmt.executeUpdate();	      
+	    conn.close();
 	}
 	
-	public static boolean updateTermin(Termin termin) {
-		return false;
+	public static void updateTermin(Termin termin, String where) throws Exception {
+		Connection conn = getconnection();
+		PreparedStatement preparedStmt = null;
+		
+		switch(where) {
+			case "terminName":
+				String query1 = "update termin set termin_name = ? where termin_id = ?";		
+				preparedStmt = conn.prepareStatement(query1);
+				preparedStmt.setString(1, termin.getTerminName());
+				preparedStmt.setInt(2, termin.getTerminId());
+				break;
+			case "terminDate":
+				String query2 = "update termin set termin_date = ? where termin_id = ?";
+				preparedStmt = conn.prepareStatement(query2);
+				preparedStmt.setString(1, termin.getTerminDate());
+				preparedStmt.setInt(2, termin.getTerminId());
+				break;
+			case "terminTime":
+				String query3 = "update termin set termin_time = ? where termin_id = ?";
+				preparedStmt = conn.prepareStatement(query3);
+				preparedStmt.setString(1, termin.getTerminTime());
+				preparedStmt.setInt(2, termin.getTerminId());
+				break;
+		}
+
+		preparedStmt.executeUpdate();	      
+	    conn.close();
+		
 	}
 	
-	public static boolean updateNews(News news) {
-		return false;
+	public static void updateNews(News news, String where) throws Exception {
+		Connection conn = getconnection();
+		PreparedStatement preparedStmt = null;
+		
+		switch(where) {
+			case "sender":
+				String query1 = "update news set sender = ? where news_id = ?";		
+				preparedStmt = conn.prepareStatement(query1);
+				preparedStmt.setString(1, news.getSenderUserName());
+				preparedStmt.setInt(2, news.getNewsId());
+				break;
+			case "recipient":
+				String query2 = "update news set recipient = ? where news_id = ?";
+				preparedStmt = conn.prepareStatement(query2);
+				preparedStmt.setString(1, news.getRecipientUserName());
+				preparedStmt.setInt(2, news.getNewsId());
+				break;
+			case "terminId":
+				String query3 = "update news set termin_id = ? where news_id = ?";
+				preparedStmt = conn.prepareStatement(query3);
+				preparedStmt.setInt(1, news.getTerminId());
+				preparedStmt.setInt(2, news.getNewsId());
+				break;
+		}
+
+		preparedStmt.executeUpdate();	      
+	    conn.close();
+		
 	}
 	
 	public static void deleteUser(String username) throws Exception {
@@ -203,9 +285,7 @@ public class MySqlConnetion {
 		preparedStmt.execute();	      
 		conn.close();
 	}
-	
-	
-	
+
 	public static Connection getconnection() throws Exception {
 		
 		String driver ="com.mysql.cj.jdbc.Driver";
@@ -217,5 +297,4 @@ public class MySqlConnetion {
 		System.out.println("Sql verbunden...");
 		return conn;			
 	}
-
 }

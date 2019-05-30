@@ -18,6 +18,15 @@ public class User implements Serializable {
 		this.vorname = "";
 		this.passwort = "";
 	}
+	
+	public User(String userName, String email, String nachname, String vorname, String passwort) {
+		super();
+		this.userName = userName;
+		this.email = email;
+		this.nachname = nachname;
+		this.vorname = vorname;
+		this.passwort = passwort;
+	}
 
 	public String getUserName() {
 		return userName;
@@ -58,15 +67,10 @@ public class User implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	public String toString() {		
-		String ret;
-		ret = "UserName: "+getUserName()+"; "
-		+"Email: "+getEmail()+"; "
-		+"Nachname: "+getNachname()+"; "
-		+"Vorname: "+getVorname()+"; "
-		+"passwort: "+getPasswort()+"\n";
-		return ret;
-	}
 
+	@Override
+	public String toString() {
+		return "User [getUserName()=" + getUserName() + ", getNachname()=" + getNachname() + ", getVorname()="
+				+ getVorname() + ", getPasswort()=" + getPasswort() + ", getEmail()=" + getEmail() + "]";
+	}
 }

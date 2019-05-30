@@ -4,38 +4,62 @@ import java.io.Serializable;
 
 public class News implements Serializable {
 
-	private User sender;
-	private User recepient;
-	private Termin termin;
+	private String senderUserName;
+	private String recipientUserName;
+	private int terminId;
+	private int newsId;
 	
 	public News() {
 		super();
-		sender = null;
-		recepient = null;
-		termin = null;	
+		this.senderUserName = "";
+		this.recipientUserName = "";
+		this.terminId = 0;
+		this.newsId = 0;
 	}
-	
-	public User getSender() {
-		return sender;
+
+	public News(String senderUserName, String recipientUserName, int terminId, int newsId) {
+		super();
+		this.senderUserName = senderUserName;
+		this.recipientUserName = recipientUserName;
+		this.terminId = terminId;
+		this.newsId = newsId;
 	}
-	
-	public void setSender(User sender) {
-		this.sender = sender;
+
+	public String getSenderUserName() {
+		return senderUserName;
 	}
-	
-	public User getRecepient() {
-		return recepient;
+
+	public void setSenderUserName(String senderUserName) {
+		this.senderUserName = senderUserName;
 	}
-	
-	public void setRecepient(User recepient) {
-		this.recepient = recepient;
+
+	public String getRecipientUserName() {
+		return recipientUserName;
 	}
-	
-	public Termin getTermin() {
-		return termin;
+
+	public void setRecipientUserName(String recipientUserName) {
+		this.recipientUserName = recipientUserName;
 	}
-	
-	public void setTermin(Termin termin) {
-		this.termin = termin;
+
+	public int getTerminId() {
+		return terminId;
 	}
+
+	public void setTerminId(int terminId) {
+		this.terminId = terminId;
+	}
+
+	public int getNewsId() {
+		return newsId;
+	}
+
+	public void setNewsId(int newsId) {
+		this.newsId = newsId;
+	}
+
+	@Override
+	public String toString() {
+		return "News [senderUserName=" + getSenderUserName() + ", recipientUserName=" + getRecipientUserName() + ", terminId="
+				+ getTerminId() + ", newsId=" + getNewsId()+ "]";
+	}	
 }

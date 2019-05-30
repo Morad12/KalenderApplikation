@@ -17,6 +17,14 @@ public class News implements Serializable {
 		this.newsId = 0;
 	}
 
+	public News(String senderUserName, String recipientUserName, int terminId, int newsId) {
+		super();
+		this.senderUserName = senderUserName;
+		this.recipientUserName = recipientUserName;
+		this.terminId = terminId;
+		this.newsId = newsId;
+	}
+
 	public String getSenderUserName() {
 		return senderUserName;
 	}
@@ -48,4 +56,12 @@ public class News implements Serializable {
 	public void setNewsId(int newsId) {
 		this.newsId = newsId;
 	}
+
+	@Override
+	public String toString() {
+		return "News [senderUserName=" + getSenderUserName() + ", recipientUserName=" + getRecipientUserName() + ", terminId="
+				+ getTerminId() + ", newsId=" + getNewsId()+ "]";
+	}
+	
+	
 }
