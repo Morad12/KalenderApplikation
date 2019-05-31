@@ -27,8 +27,14 @@ public class test {
 //			user.setNachname("najmi");
 //			MySqlConnetion.updateUser(user, "nachname");			
 //			MySqlConnetion.deleteUser("jhghk");
+			Termin termin = new Termin("eren501","2018-04-15","20:15:14","veranstaltung");
+			System.out.println(addTermin(termin));
+//			getMyTermine("eren");
+//			System.out.println(MySqlConnetion.getTerminList());
+//			System.out.println(MySqlConnetion.getTermineInhaber("eren"));
 			
 			
+//			System.out.println(MySqlConnetion.searchTerminTime("eren500", "20:15:14"));
 			
 			
 			
@@ -44,13 +50,12 @@ public class test {
 
 	}
 	
-	public boolean addTermin(Termin termin) throws RemoteException, Exception {		
-		
-		Termin null_test = MySqlConnetion.searchTermin(termin.getTerminId());
-		if(null_test == null) {			
+	public static boolean addTermin(Termin termin) throws RemoteException, Exception {				
+		Termin termin1 = MySqlConnetion.searchTerminTime(termin.getTerminInhaber(), termin.getTerminTime());
+		if(termin1 == null) {			
 			MySqlConnetion.insertTermin(termin);
 			return true;
-		}		
+		}
 		return false;
 	}
 
@@ -76,7 +81,7 @@ public class test {
 	}
 	
 	
-	public List<Termin> getMyTermine(String username) throws RemoteException, Exception{
+	public static List<Termin> getMyTermine(String username) throws RemoteException, Exception{
 		User user = MySqlConnetion.searchUser(username, "username");
 		if(user == null)
 			System.out.println("Exp");

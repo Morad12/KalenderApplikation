@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ import utilities.User;
 
 public class MySqlConnetion {
 	
-	public static List<User> getUserList() throws Exception  {
+	/*public static List<User> getUserList() throws Exception  {
 		List<User> users = new ArrayList<User>();
 		User user = new User();
 		Connection conn = getconnection();
@@ -29,57 +30,60 @@ public class MySqlConnetion {
 			user.setPasswort(res.getString("passwort"));
 			users.add(user);
 		}	
+		
 		conn.close();
 		return users;
-	}
+	}*/
 	
 	
 	public static List<Termin> getTerminList() throws Exception {
 		List<Termin> termine = new ArrayList<Termin>();
-		Termin termin = new Termin();
 		Connection conn = getconnection();
 		PreparedStatement stam = conn.prepareStatement("SELECT * FROM termin");
 		ResultSet res = stam.executeQuery();
 		while(res.next()) {
-			termin.setTerminId(res.getInt("termin_id"));
-			termin.setTerminName(res.getString("termin_name"));
-			termin.setTerminDate(res.getString("termin_date"));
-			termin.setTerminTime(res.getString("termin_time"));			
+			int terminId = res.getInt("termin_id");
+			String terminInhaber = res.getString("termin_inhaber");
+			String terminName = res.getString("termin_name");
+			String terminDate = res.getString("termin_date");
+			String terminTime = res.getString("termin_time");		
+			Termin termin = new Termin(terminId, terminInhaber, terminName, terminDate, terminTime);
 			termine.add(termin);
-		}	
+		}
 		conn.close();
 		return termine;
 	}
 	
 	public static List<Termin> getTermineInhaber(String terminInhaber) throws Exception {
 		List<Termin> termine = new ArrayList<Termin>();
-		Termin termin = new Termin();
 		Connection conn = getconnection();
 		PreparedStatement stam = conn.prepareStatement("SELECT * FROM termin where termin_inhaber = ?");
 		stam.setString(1, terminInhaber);
 		ResultSet res = stam.executeQuery();
 		while(res.next()) {
-			termin.setTerminId(res.getInt("termin_id"));
-			termin.setTerminName(res.getString("termin_name"));
-			termin.setTerminDate(res.getString("termin_date"));
-			termin.setTerminTime(res.getString("termin_time"));			
+			int terminId = res.getInt("termin_id");
+			String termin_Inhaber = res.getString("termin_inhaber");
+			String terminName = res.getString("termin_name");
+			String terminDate = res.getString("termin_date");
+			String terminTime = res.getString("termin_time");		
+			Termin termin = new Termin(terminId, termin_Inhaber, terminName, terminDate, terminTime);
 			termine.add(termin);
-		}	
+		}
 		conn.close();
 		return termine;
 	}
 	
 	public static List<News> getNewsList() throws Exception{
 		List<News> newstab = new ArrayList<News>();
-		News news = new News();
 		Connection conn = getconnection();
 		PreparedStatement stam = conn.prepareStatement("SELECT * FROM news");
 		ResultSet res = stam.executeQuery();
 		while(res.next()) {
-			news.setNewsId(res.getInt("newsid"));
-			news.setSenderUserName(res.getString("sender"));
-			news.setRecipientUserName(res.getString("recipient"));
-			news.setTerminId(res.getInt("terminid"));
+			int newsId = res.getInt("news_id");
+			String senderUserName = res.getString("sender");
+			String recipientUserName = res.getString("recipient");
+			int terminId = res.getInt("termin_id");
+			News news = new News(senderUserName, recipientUserName, terminId, newsId);
 			newstab.add(news);
 		}
 		conn.close();
@@ -124,6 +128,7 @@ public class MySqlConnetion {
 		ResultSet res = stam.executeQuery();
 		if(res.next()) {
 			termin.setTerminId(res.getInt("termin_id"));
+			termin.setTerminInhaber(res.getString("termin_inhaber"));
 			termin.setTerminName(res.getString("termin_name"));
 			termin.setTerminDate(res.getString("termin_date"));
 			termin.setTerminTime(res.getString("termin_time"));			
@@ -134,6 +139,31 @@ public class MySqlConnetion {
 		}
 		conn.close();
 		return termin;
+	}
+	
+	public static Termin searchTerminTime(String TerminInhaber, String TerminTime) throws Exception {
+		Time time = Time.valueOf(TerminTime);
+		
+		Termin termin = new Termin();
+		Connection conn = getconnection();
+		PreparedStatement stam = conn.prepareStatement("SELECT * FROM termin where termin_inhaber = ? and termin_time = ?");
+		stam.setString(1, TerminInhaber);
+		stam.setTime(2, time);
+		ResultSet res = stam.executeQuery();
+		if(res.next()) {
+			termin.setTerminId(res.getInt("termin_id"));
+			termin.setTerminInhaber(res.getString("termin_inhaber"));
+			termin.setTerminName(res.getString("termin_name"));
+			termin.setTerminDate(res.getString("termin_date"));
+			termin.setTerminTime(res.getString("termin_time"));			
+		}
+		else {
+			conn.close();
+			return null;
+		}
+		conn.close();
+		return termin;
+		
 	}
 	
 	public static News searchNews(int newsId) throws Exception {
@@ -179,10 +209,10 @@ public class MySqlConnetion {
 		String str2 = termin.getTerminTime();
 		Time time = Time.valueOf(str2);
 		
-		String query = "insert into termin (termin_id, termin_name, termin_date, termin_time)"
+		String query = "insert into termin (termin_inhaber, termin_name, termin_date, termin_time)"
 		        + " values (?, ?, ?, ?)";
 		PreparedStatement stam = conn.prepareStatement(query);
-		stam.setInt(1,termin.getTerminId());
+		stam.setString(1,termin.getTerminInhaber());
 		stam.setString(2, termin.getTerminName());
 		stam.setDate(3, date);
 		stam.setTime(4, time);
@@ -331,7 +361,7 @@ public class MySqlConnetion {
 		conn.close();
 	}
 
-	public static Connection getconnection() throws Exception {
+	public static Connection getconnection() throws Exception  {
 		
 		String driver ="com.mysql.cj.jdbc.Driver";
 		String url = "jdbc:mysql://localhost:3306/kalender_db";

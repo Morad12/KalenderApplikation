@@ -21,9 +21,19 @@ public class Termin implements Serializable {
 		this.terminName = "";
 	}
 	
-	public Termin(int terminId, String terminInhaber, String terminDate, String terminTime, String terminName) {
+
+	
+	public Termin(int terminId, String terminInhaber, String terminName, String terminDate, String terminTime) {
 		super();
 		this.terminId = terminId;
+		this.terminInhaber = terminInhaber;
+		this.terminName = terminName;
+		this.terminDate = terminDate;
+		this.terminTime = terminTime;
+	}
+
+	public Termin(String terminInhaber, String terminDate, String terminTime, String terminName) {
+		super();
 		this.terminInhaber = terminInhaber;
 		this.terminName = terminName;
 		this.terminDate = terminDate;
@@ -69,10 +79,11 @@ public class Termin implements Serializable {
 	public void setTerminTime(String terminTime) {
 		this.terminTime = terminTime;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Termin [getTerminId()=" + getTerminId() + ", getTerminDate()=" + getTerminDate() + ", getTerminName()="
-				+ getTerminName() + ", getTerminTime()=" + getTerminTime() + "]";
+		return "Termin [terminId=" + terminId + ", terminInhaber=" + terminInhaber + ", terminName=" + terminName
+				+ ", terminDate=" + terminDate + ", terminTime=" + terminTime + "]\n";
 	}
+
 }
