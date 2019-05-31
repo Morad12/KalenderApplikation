@@ -141,14 +141,16 @@ public class MySqlConnetion {
 		return termin;
 	}
 	
-	public static Termin searchTerminTime(String TerminInhaber, String TerminTime) throws Exception {
+	public static Termin searchTerminTime(String TerminInhaber, String TerminTime, String terminDate) throws Exception {
 		Time time = Time.valueOf(TerminTime);
+		Date date = Date.valueOf(terminDate);
 		
 		Termin termin = new Termin();
 		Connection conn = getconnection();
-		PreparedStatement stam = conn.prepareStatement("SELECT * FROM termin where termin_inhaber = ? and termin_time = ?");
+		PreparedStatement stam = conn.prepareStatement("SELECT * FROM termin where termin_inhaber = ? and termin_time = ? and termin_date = ?");
 		stam.setString(1, TerminInhaber);
 		stam.setTime(2, time);
+		stam.setDate(3, date);
 		ResultSet res = stam.executeQuery();
 		if(res.next()) {
 			termin.setTerminId(res.getInt("termin_id"));

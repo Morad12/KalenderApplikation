@@ -27,8 +27,8 @@ public class test {
 //			user.setNachname("najmi");
 //			MySqlConnetion.updateUser(user, "nachname");			
 //			MySqlConnetion.deleteUser("jhghk");
-			Termin termin = new Termin("eren501","2018-04-15","20:15:14","veranstaltung");
-			System.out.println(addTermin(termin));
+			Termin termin = new Termin("eren501","2018-04-14","20:15:14","veranstaltung");
+//			System.out.println(addTermin(termin));
 //			getMyTermine("eren");
 //			System.out.println(MySqlConnetion.getTerminList());
 //			System.out.println(MySqlConnetion.getTermineInhaber("eren"));
@@ -36,27 +36,29 @@ public class test {
 			
 //			System.out.println(MySqlConnetion.searchTerminTime("eren500", "20:15:14"));
 			
-			
+			System.out.println(getMyTermine("eren501"));
 			
 
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		
-		
+		}		
 
 	}
 	
 	public static boolean addTermin(Termin termin) throws RemoteException, Exception {				
-		Termin termin1 = MySqlConnetion.searchTerminTime(termin.getTerminInhaber(), termin.getTerminTime());
+		User user = MySqlConnetion.searchUser(termin.getTerminInhaber(), "username");
+		if(user == null) {
+			System.out.println("Exp");
+			return false;
+		}
+		Termin termin1 = MySqlConnetion.searchTerminTime(termin.getTerminInhaber(), termin.getTerminTime(), termin.getTerminDate());
 		if(termin1 == null) {			
 			MySqlConnetion.insertTermin(termin);
 			return true;
 		}
-		return false;
+		return false;		
 	}
 
 	public boolean deleteTermin(int terminId) throws RemoteException, Exception {
@@ -83,9 +85,10 @@ public class test {
 	
 	public static List<Termin> getMyTermine(String username) throws RemoteException, Exception{
 		User user = MySqlConnetion.searchUser(username, "username");
-		if(user == null)
+		if(user == null) {
 			System.out.println("Exp");
-		
+			return null;
+		}
 		List<Termin> termine = MySqlConnetion.getTermineInhaber(username);
 		return termine;
 	}
