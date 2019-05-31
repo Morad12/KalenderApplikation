@@ -6,24 +6,28 @@ import java.util.Date;
 public class Termin implements Serializable {
 	
 	private int terminId;
+	private String terminInhaber;
+	private String terminName;
 	private String terminDate;
 	private String terminTime;
-	private String terminName;
+	
 	
 	public Termin() {
 		super();
 		this.terminId = 0;
+		this.terminInhaber = "";
 		this.terminDate = "";
 		this.terminTime = "";
 		this.terminName = "";
 	}
 	
-	public Termin(int terminId, String terminDate, String terminTime, String terminName) {
+	public Termin(int terminId, String terminInhaber, String terminDate, String terminTime, String terminName) {
 		super();
 		this.terminId = terminId;
-		this.terminDate = terminDate;
-		this.terminTime = terminTime;
+		this.terminInhaber = terminInhaber;
 		this.terminName = terminName;
+		this.terminDate = terminDate;
+		this.terminTime = terminTime;		
 	}
 
 	public int getTerminId() {
@@ -32,6 +36,14 @@ public class Termin implements Serializable {
 
 	public void setTerminId(int terminId) {
 		this.terminId = terminId;
+	}
+
+	public String getTerminInhaber() {
+		return terminInhaber;
+	}
+
+	public void setTerminInhaber(String terminInhaber) {
+		this.terminInhaber = terminInhaber;
 	}
 
 	public String getTerminDate() {

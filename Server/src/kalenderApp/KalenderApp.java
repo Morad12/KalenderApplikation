@@ -12,19 +12,20 @@ import utilities.User;
 
 public interface KalenderApp extends Remote {
 	
-	public boolean creatKonto(User user) throws RemoteException;
-	public User login(String userName, String passwort) throws RemoteException;
-	public boolean logout(User user) throws RemoteException;
-	public boolean updateKonto(User user) throws RemoteException;
-	public boolean deleteKonto(User user) throws RemoteException;
+	public boolean creatKonto(User user) throws RemoteException, Exception;
+	public User login(String username, String passwort) throws RemoteException, Exception;
+	public boolean logout(User user) throws RemoteException, Exception;
+	public User updateKonto(User user, String where) throws RemoteException, Exception;
+	public boolean deleteKonto(User user) throws RemoteException, Exception;
 	
-	public boolean addTermin(Termin termin) throws RemoteException;
-	public boolean deleteTermin(int terminId) throws RemoteException;
-	public Termin updateTermin(int terminId) throws RemoteException;
-	public List<Termin> searchSpan(Date von, Date bis) throws RemoteException;
+	public boolean addTermin(Termin termin) throws RemoteException, Exception;
+	public boolean deleteTermin(int terminId) throws RemoteException, Exception;
+	public Termin updateTermin(int terminId, String where) throws RemoteException, Exception;
+	public List<Termin> getMyTermine(String username) throws RemoteException, Exception;
+	public List<Termin> searchSpan(String date_von, String date_bis) throws RemoteException, Exception;
 	
-	public boolean userEinladen(User user, Termin termin) throws RemoteException;
-	public List<News> getNews(User user) throws RemoteException;
-	public boolean deleteNews(int newsId) throws RemoteException;
+	public boolean userEinladen(News news) throws RemoteException, Exception;
+	public List<News> getNews(User user) throws RemoteException, Exception;
+	public boolean deleteNews(int newsId) throws RemoteException, Exception;
 		
 }

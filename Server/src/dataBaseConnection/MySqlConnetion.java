@@ -51,6 +51,24 @@ public class MySqlConnetion {
 		return termine;
 	}
 	
+	public static List<Termin> getTermineInhaber(String terminInhaber) throws Exception {
+		List<Termin> termine = new ArrayList<Termin>();
+		Termin termin = new Termin();
+		Connection conn = getconnection();
+		PreparedStatement stam = conn.prepareStatement("SELECT * FROM termin where termin_inhaber = ?");
+		stam.setString(1, terminInhaber);
+		ResultSet res = stam.executeQuery();
+		while(res.next()) {
+			termin.setTerminId(res.getInt("termin_id"));
+			termin.setTerminName(res.getString("termin_name"));
+			termin.setTerminDate(res.getString("termin_date"));
+			termin.setTerminTime(res.getString("termin_time"));			
+			termine.add(termin);
+		}	
+		conn.close();
+		return termine;
+	}
+	
 	public static List<News> getNewsList() throws Exception{
 		List<News> newstab = new ArrayList<News>();
 		News news = new News();
@@ -68,18 +86,31 @@ public class MySqlConnetion {
 		return newstab;
 	}
 	
-	public static User searchUser(String username) throws Exception {
+	public static User searchUser(String usernameORemail, String with) throws Exception {
 		User user = new User();
 		Connection conn = getconnection();
-		PreparedStatement stam = conn.prepareStatement("SELECT * FROM user where username = ?");
-		stam.setString(1, username);
+		PreparedStatement stam = null;
+		
+		switch(with) {
+			case "username":
+				stam = conn.prepareStatement("SELECT * FROM user where username = ?");
+				break;
+			case "email":
+				stam = conn.prepareStatement("SELECT * FROM user where email = ?");
+				break;	
+		}		
+		stam.setString(1, usernameORemail);
 		ResultSet res = stam.executeQuery();
-		while(res.next()) {
+		if (res.next()){ 
 			user.setUserName(res.getString("username"));
 			user.setEmail(res.getString("email"));
 			user.setNachname(res.getString("nachname"));
 			user.setVorname(res.getString("vorname"));
 			user.setPasswort(res.getString("passwort"));
+		}
+		else{
+			conn.close();
+			return null;
 		}
 		conn.close();
 		return user;
@@ -91,12 +122,16 @@ public class MySqlConnetion {
 		PreparedStatement stam = conn.prepareStatement("SELECT * FROM termin where termin_id = ?");
 		stam.setInt(1, terminId);
 		ResultSet res = stam.executeQuery();
-		while(res.next()) {
+		if(res.next()) {
 			termin.setTerminId(res.getInt("termin_id"));
 			termin.setTerminName(res.getString("termin_name"));
 			termin.setTerminDate(res.getString("termin_date"));
 			termin.setTerminTime(res.getString("termin_time"));			
-		}	
+		}
+		else {
+			conn.close();
+			return null;
+		}
 		conn.close();
 		return termin;
 	}
@@ -107,12 +142,16 @@ public class MySqlConnetion {
 		PreparedStatement stam = conn.prepareStatement("SELECT * FROM news where news_id = ?");
 		stam.setInt(1, newsId);
 		ResultSet res = stam.executeQuery();
-		while(res.next()) {
+		if(res.next()) {
 			news.setNewsId(res.getInt("newsid"));
 			news.setSenderUserName(res.getString("sender"));
 			news.setRecipientUserName(res.getString("recipient"));
 			news.setTerminId(res.getInt("terminid"));
-		}	
+		}
+		else {
+			conn.close();
+			return null;
+		}
 		conn.close();
 		return news;
 	}
@@ -204,6 +243,12 @@ public class MySqlConnetion {
 		PreparedStatement preparedStmt = null;
 		
 		switch(where) {
+			case "terminInhaber":
+				String query0 = "update termin set termin_inhaber = ? where termin_id = ?";		
+				preparedStmt = conn.prepareStatement(query0);
+				preparedStmt.setString(1, termin.getTerminInhaber());
+				preparedStmt.setInt(2, termin.getTerminId());
+				break;
 			case "terminName":
 				String query1 = "update termin set termin_name = ? where termin_id = ?";		
 				preparedStmt = conn.prepareStatement(query1);
@@ -297,4 +342,5 @@ public class MySqlConnetion {
 		System.out.println("Sql verbunden...");
 		return conn;			
 	}
+
 }
