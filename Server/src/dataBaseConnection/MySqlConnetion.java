@@ -69,12 +69,12 @@ public class MySqlConnetion {
 		return termine;
 	}
 	
-	public static List<News> getNewsList(String username) throws Exception{
+	public static List<News> getNewsRecipientList(String recipientUsername) throws Exception{
 		List<News> newstab = new ArrayList<News>();
 		Connection conn = getconnection();
 		PreparedStatement stam = conn.prepareStatement("SELECT * FROM news where recipient = ?");
 		ResultSet res = stam.executeQuery();
-		stam.setString(1, username);
+		stam.setString(1, recipientUsername);
 		while(res.next()) {
 			int newsId = res.getInt("news_id");
 			String senderUserName = res.getString("sender");
@@ -86,6 +86,25 @@ public class MySqlConnetion {
 		conn.close();
 		return newstab;
 	}
+	
+	public static List<News> getNewsSenderList(String senderUsername) throws Exception{
+		List<News> newstab = new ArrayList<News>();
+		Connection conn = getconnection();
+		PreparedStatement stam = conn.prepareStatement("SELECT * FROM news where sender = ?");
+		ResultSet res = stam.executeQuery();
+		stam.setString(1, senderUsername);
+		while(res.next()) {
+			int newsId = res.getInt("news_id");
+			String senderUserName = res.getString("sender");
+			String recipientUserName = res.getString("recipient");
+			int terminId = res.getInt("termin_id");
+			News news = new News(senderUserName, recipientUserName, terminId, newsId);
+			newstab.add(news);
+		}
+		conn.close();
+		return newstab;
+	}
+	
 	
 	public static User searchUser(String usernameORemail, String with) throws Exception {
 		User user = new User();

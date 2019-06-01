@@ -25,7 +25,8 @@ public interface KalenderApp extends Remote {
 	public List<Termin> searchSpan(Date date_von, Date date_bis, String terminInhaber) throws RemoteException, Exception;
 	
 	public boolean userEinladen(News news) throws RemoteException, Exception;
-	public List<News> getNews(String username) throws RemoteException, Exception;
+	public List<News> getNewsRecipientList(String recipientUsername) throws RemoteException, Exception;
+	public List<News> getNewsSenderList(String senderUsername) throws RemoteException, Exception;
 	public void acceptNews(News news) throws RemoteException, Exception;
 	public void refuseNews(News news) throws RemoteException, Exception;
 		

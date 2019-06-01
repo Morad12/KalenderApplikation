@@ -185,8 +185,13 @@ public class KalenderAppImp extends UnicastRemoteObject implements KalenderApp {
 }
 
 	@Override
-	public List<News> getNews(String username) throws Exception {
-		return MySqlConnetion.getNewsList(username);		
+	public List<News> getNewsRecipientList(String recipientUsername) throws Exception {
+		return MySqlConnetion.getNewsRecipientList(recipientUsername);		
+	}
+	
+	@Override
+	public List<News> getNewsSenderList(String senderUsername) throws Exception {
+		return MySqlConnetion.getNewsSenderList(senderUsername);		
 	}
 
 	@Override
