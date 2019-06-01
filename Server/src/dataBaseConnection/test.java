@@ -41,22 +41,28 @@ public class test {
 			
 //			System.out.println(MySqlConnetion.getUserList());
 			
-//			java.util.Date uDate;
-//			uDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2010-02-11 16:30:10");
+			java.util.Date uDate;
+			uDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2021-02-11 15:30:10");
 			
-//			Termin termin = new Termin("superman","Veranstaltung", uDate);
+			Termin termin = new Termin("samira","Veranstaltung", uDate);
 			
 //			MySqlConnetion.insertTermin(termin);
 			
+			int i = addTermin(termin);
+//			int i = MySqlConnetion.insertTermin(termin);
+			System.out.println(i);
+			
+			
+			
 //			System.out.println(MySqlConnetion.getTerminList());
 			
-			java.util.Date date1;
+			/*java.util.Date date1;
 			date1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2008-12-30 00:00:00");
 			
 			java.util.Date date2; 
 			date2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2011-02-11 16:30:10");
 			
-			System.out.println(searchSpan(date1, date2, "superman"));
+			System.out.println(searchSpan(date1, date2, "superman"));*/
 			
 			
 		} catch (Exception e) {
@@ -66,19 +72,34 @@ public class test {
 
 	}
 	
-	public static boolean addTermin(Termin termin) throws RemoteException, Exception {				
+	public static int addTermin(Termin termin) throws RemoteException, Exception {				
 		User user = MySqlConnetion.searchUser(termin.getTerminInhaber(), "username");
 		if(user == null) {
 			System.out.println("Exp");
-			return false;
+			return -1;
 		}
 		Termin termin1 = MySqlConnetion.searchTerminTime(termin.getTerminInhaber(), termin.getDateTime());
 		if(termin1 == null) {			
 			MySqlConnetion.insertTermin(termin);
-			return true;
+			termin1 = MySqlConnetion.searchTerminTime(termin.getTerminInhaber(), termin.getDateTime());
+			return termin1.getTerminId();
 		}
-		return false;		
+		return -1;		
 	}
+	
+	/*public static int addTermin(Termin termin) throws RemoteException, Exception {				
+		User user = MySqlConnetion.searchUser(termin.getTerminInhaber(), "username");
+		if(user == null) {
+			System.out.println("Exp");
+			return -1;
+		}
+		Termin termin1 = MySqlConnetion.searchTerminTime(termin.getTerminInhaber(), termin.getDateTime());
+		if(termin1 == null) {			
+			int terminId = MySqlConnetion.insertTermin(termin);
+			return terminId;
+		}
+		return -1;		
+	}*/
 
 	public boolean deleteTermin(int terminId) throws RemoteException, Exception {
 		

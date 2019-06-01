@@ -98,19 +98,20 @@ public class KalenderAppImp extends UnicastRemoteObject implements KalenderApp {
 	}
 
 	@Override
-	public boolean addTermin(Termin termin) throws RemoteException, Exception {		
+	public int addTermin(Termin termin) throws RemoteException, Exception {		
 
 		User user = MySqlConnetion.searchUser(termin.getTerminInhaber(), "username");
 		if(user == null) {
 			System.out.println("Exp");
-			return false;
+			return -1;
 		}
 		Termin termin1 = MySqlConnetion.searchTerminTime(termin.getTerminInhaber(), termin.getDateTime());
 		if(termin1 == null) {			
 			MySqlConnetion.insertTermin(termin);
-			return true;
+			termin1 = MySqlConnetion.searchTerminTime(termin.getTerminInhaber(), termin.getDateTime());
+			return termin1.getTerminId();
 		}
-		return false;
+		return -1;
 	}
 
 	@Override
@@ -173,7 +174,12 @@ public class KalenderAppImp extends UnicastRemoteObject implements KalenderApp {
 			System.out.println("Exp");
 			return false;
 		}
-
+		
+		News news1 = MySqlConnetion.searchNewsReciepientAndTerminId(news.getRecipientUserName(), news.getTerminId());
+		if(news1 != null) {
+			System.out.println("Exp");
+		}
+				
 		MySqlConnetion.insertNews(news);
 		return true;
 }
@@ -194,5 +200,5 @@ public class KalenderAppImp extends UnicastRemoteObject implements KalenderApp {
 	@Override
 	public void refuseNews(News news) throws RemoteException, Exception {
 		MySqlConnetion.deleteNews(news.getNewsId());
-	}
+	} 
 }

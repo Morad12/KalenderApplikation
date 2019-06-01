@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -180,6 +181,27 @@ public class MySqlConnetion {
 		return news;
 	}
 	
+	public static News searchNewsReciepientAndTerminId(String recipient, int terminId) throws Exception {
+		News news = new News();
+		Connection conn = getconnection();
+		PreparedStatement stam = conn.prepareStatement("SELECT * FROM news where recipient = ? and termin_id = ?");
+		stam.setString(1, recipient);
+		stam.setInt(2, terminId);
+		ResultSet res = stam.executeQuery();
+		if(res.next()) {
+			news.setNewsId(res.getInt("newsid"));
+			news.setSenderUserName(res.getString("sender"));
+			news.setRecipientUserName(res.getString("recipient"));
+			news.setTerminId(res.getInt("terminid"));
+		}
+		else {
+			conn.close();
+			return null;
+		}
+		conn.close();
+		return news;		
+	}
+	
 	public static void insertUser(User user) throws Exception {		
 		Connection conn = getconnection();
 		String query = "insert into user (username, email, nachname, vorname, passwort)"
@@ -198,26 +220,51 @@ public class MySqlConnetion {
 		
 		Connection conn = getconnection();		
 		Timestamp sDate = new java.sql.Timestamp(termin.getDateTime().getTime());		
-		String query = "insert into termin (termin_id, termin_inhaber, termin_name, termin_date_time)"
-		        + " values (?, ?, ?, ?)";
+		String query = "insert into termin (termin_inhaber, termin_name, termin_date_time)"
+		        + " values (?, ?, ?)";
 		PreparedStatement stam = conn.prepareStatement(query);
-		stam.setInt(1,termin.getTerminId());
-		stam.setString(2,termin.getTerminInhaber());
-		stam.setString(3, termin.getTerminName());
-		stam.setTimestamp(4, sDate);
+		stam.setString(1,termin.getTerminInhaber());
+		stam.setString(2, termin.getTerminName());
+		stam.setTimestamp(3, sDate);
 		stam.execute();
 		conn.close();
 	}
 	
+	/*public static int insertTermin(Termin termin) throws Exception {
+		
+		Connection conn = getconnection();	
+		int termin_Id = 0;
+		Timestamp sDate = new java.sql.Timestamp(termin.getDateTime().getTime());	
+		String query = "";
+		PreparedStatement stam;
+				
+		query = "insert into termin (termin_inhaber, termin_name, termin_date_time) values (?, ?, ?)";
+		stam = conn.prepareStatement(query);
+		stam.setString(1,termin.getTerminInhaber());
+		stam.setString(2, termin.getTerminName());
+		stam.setTimestamp(3, sDate);
+		stam.execute();		
+		
+		query = "SELECT * FROM termin where termin_inhaber = ? and termin_date_time = ?";
+		stam = conn.prepareStatement(query);
+		stam.setString(1, termin.getTerminInhaber());
+		stam.setTimestamp(2, sDate);
+		ResultSet res = stam.executeQuery();
+		if(res.next())
+			termin_Id = res.getInt("termin_id");
+		
+		conn.close();
+		return termin_Id;
+	}*/
+	
 	public static void insertNews(News news) throws Exception {
 		Connection conn = getconnection();
-		String query = "insert into news (news_id, sender, recipient, termin_id)"
-		        + " values (?, ?, ?, ?)";
+		String query = "insert into news (sender, recipient, termin_id)"
+		        + " values (?, ?, ?)";
 		PreparedStatement stam = conn.prepareStatement(query);
-		stam.setInt(1, news.getNewsId());
-		stam.setString(2, news.getSenderUserName());
-		stam.setString(3, news.getRecipientUserName());
-		stam.setInt(4, news.getTerminId());
+		stam.setString(1, news.getSenderUserName());
+		stam.setString(2, news.getRecipientUserName());
+		stam.setInt(3, news.getTerminId());
 		stam.execute();
 		conn.close();
 	}

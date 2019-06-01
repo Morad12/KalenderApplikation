@@ -18,7 +18,7 @@ public interface KalenderApp extends Remote {
 	public User updateKonto(User user, String where) throws RemoteException, Exception;
 	public boolean deleteKonto(User user) throws RemoteException, Exception;
 	
-	public boolean addTermin(Termin termin) throws RemoteException, Exception;
+	public int addTermin(Termin termin) throws RemoteException, Exception;
 	public boolean deleteTermin(int terminId) throws RemoteException, Exception;
 	public Termin updateTermin(int terminId, String where) throws RemoteException, Exception;
 	public List<Termin> getMyTermine(String username) throws RemoteException, Exception;
