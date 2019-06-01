@@ -22,10 +22,11 @@ public interface KalenderApp extends Remote {
 	public boolean deleteTermin(int terminId) throws RemoteException, Exception;
 	public Termin updateTermin(int terminId, String where) throws RemoteException, Exception;
 	public List<Termin> getMyTermine(String username) throws RemoteException, Exception;
-	public List<Termin> searchSpan(String date_von, String date_bis) throws RemoteException, Exception;
+	public List<Termin> searchSpan(Date date_von, Date date_bis, String terminInhaber) throws RemoteException, Exception;
 	
 	public boolean userEinladen(News news) throws RemoteException, Exception;
-	public List<News> getNews(User user) throws RemoteException, Exception;
-	public boolean deleteNews(int newsId) throws RemoteException, Exception;
+	public List<News> getNews(String username) throws RemoteException, Exception;
+	public void acceptNews(News news) throws RemoteException, Exception;
+	public void refuseNews(News news) throws RemoteException, Exception;
 		
 }

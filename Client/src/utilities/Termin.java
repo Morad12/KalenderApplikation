@@ -6,24 +6,32 @@ import java.util.Date;
 public class Termin implements Serializable {
 	
 	private int terminId;
-	private String terminDate;
-	private String terminTime;
+	private String terminInhaber;
 	private String terminName;
+	private Date dateTime;
+	
 	
 	public Termin() {
 		super();
 		this.terminId = 0;
-		this.terminDate = "";
-		this.terminTime = "";
+		this.terminInhaber = "";
 		this.terminName = "";
+		this.dateTime = null;		
 	}
 	
-	public Termin(int terminId, String terminDate, String terminTime, String terminName) {
+	public Termin(int terminId, String terminInhaber, String terminName, Date dateTime) {
 		super();
 		this.terminId = terminId;
-		this.terminDate = terminDate;
-		this.terminTime = terminTime;
+		this.terminInhaber = terminInhaber;
 		this.terminName = terminName;
+		this.dateTime = dateTime;
+	}
+
+	public Termin(String terminInhaber, String terminName, Date dateTime) {
+		super();
+		this.terminInhaber = terminInhaber;
+		this.terminName = terminName;
+		this.dateTime = dateTime;		
 	}
 
 	public int getTerminId() {
@@ -34,12 +42,12 @@ public class Termin implements Serializable {
 		this.terminId = terminId;
 	}
 
-	public String getTerminDate() {
-		return terminDate;
+	public String getTerminInhaber() {
+		return terminInhaber;
 	}
 
-	public void setTerminDate(String terminDate) {
-		this.terminDate = terminDate;
+	public void setTerminInhaber(String terminInhaber) {
+		this.terminInhaber = terminInhaber;
 	}
 
 	public String getTerminName() {
@@ -50,17 +58,17 @@ public class Termin implements Serializable {
 		this.terminName = terminName;
 	}
 
-	public String getTerminTime() {
-		return terminTime;
+	public Date getDateTime() {
+		return dateTime;
 	}
 
-	public void setTerminTime(String terminTime) {
-		this.terminTime = terminTime;
+	public void setDateTime(Date dateTime) {
+		this.dateTime = dateTime;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Termin [getTerminId()=" + getTerminId() + ", getTerminDate()=" + getTerminDate() + ", getTerminName()="
-				+ getTerminName() + ", getTerminTime()=" + getTerminTime() + "]";
+		return "Termin [terminId=" + terminId + ", terminInhaber=" + terminInhaber + ", terminName=" + terminName
+				+ ", dateTime=" + dateTime + "]\n";
 	}
 }

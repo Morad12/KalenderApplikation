@@ -2,7 +2,9 @@ package dataBaseConnection;
 
 
 import java.rmi.RemoteException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import utilities.Termin;
@@ -27,7 +29,6 @@ public class test {
 //			user.setNachname("najmi");
 //			MySqlConnetion.updateUser(user, "nachname");			
 //			MySqlConnetion.deleteUser("jhghk");
-			Termin termin = new Termin("eren501","2018-04-14","20:15:14","veranstaltung");
 //			System.out.println(addTermin(termin));
 //			getMyTermine("eren");
 //			System.out.println(MySqlConnetion.getTerminList());
@@ -36,9 +37,27 @@ public class test {
 			
 //			System.out.println(MySqlConnetion.searchTerminTime("eren500", "20:15:14"));
 			
-			System.out.println(getMyTermine("eren501"));
+//			System.out.println(getMyTermine("eren501"));
 			
-
+//			System.out.println(MySqlConnetion.getUserList());
+			
+//			java.util.Date uDate;
+//			uDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2010-02-11 16:30:10");
+			
+//			Termin termin = new Termin("superman","Veranstaltung", uDate);
+			
+//			MySqlConnetion.insertTermin(termin);
+			
+//			System.out.println(MySqlConnetion.getTerminList());
+			
+			java.util.Date date1;
+			date1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2008-12-30 00:00:00");
+			
+			java.util.Date date2; 
+			date2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse("2011-02-11 16:30:10");
+			
+			System.out.println(searchSpan(date1, date2, "superman"));
+			
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -53,7 +72,7 @@ public class test {
 			System.out.println("Exp");
 			return false;
 		}
-		Termin termin1 = MySqlConnetion.searchTerminTime(termin.getTerminInhaber(), termin.getTerminTime(), termin.getTerminDate());
+		Termin termin1 = MySqlConnetion.searchTerminTime(termin.getTerminInhaber(), termin.getDateTime());
 		if(termin1 == null) {			
 			MySqlConnetion.insertTermin(termin);
 			return true;
@@ -91,6 +110,17 @@ public class test {
 		}
 		List<Termin> termine = MySqlConnetion.getTermineInhaber(username);
 		return termine;
+	}
+	
+	public static List<Termin> searchSpan(Date date_von, Date date_bis, String userName) throws RemoteException, Exception {
+		List<Termin> termine = MySqlConnetion.getTermineInhaber(userName);
+		List<Termin> termineSpan = new ArrayList<Termin>();
+		
+		for(Termin termin : termine) {
+			if(termin.getDateTime().after(date_von) && termin.getDateTime().before(date_bis))
+				termineSpan.add(termin);
+		}	
+		return termineSpan;
 	}
 
 }

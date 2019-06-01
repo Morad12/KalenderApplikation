@@ -70,7 +70,8 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User [getUserName()=" + getUserName() + ", getNachname()=" + getNachname() + ", getVorname()="
-				+ getVorname() + ", getPasswort()=" + getPasswort() + ", getEmail()=" + getEmail() + "]\n";
+		return "User [userName=" + userName + ", email=" + email + ", nachname=" + nachname + ", vorname=" + vorname
+				+ ", passwort=" + passwort + "]\n";
 	}
+
 }

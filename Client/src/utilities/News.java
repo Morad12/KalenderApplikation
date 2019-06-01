@@ -59,7 +59,9 @@ public class News implements Serializable {
 
 	@Override
 	public String toString() {
-		return "News [senderUserName=" + getSenderUserName() + ", recipientUserName=" + getRecipientUserName() + ", terminId="
-				+ getTerminId() + ", newsId=" + getNewsId()+ "]";
-	}	
+		return "\nnewsId= " + getNewsId() + ", senderUserName=" + getSenderUserName() + ", recipientUserName=" + getRecipientUserName() + ", terminId="
+				+ getTerminId() + "\n";
+	}
+	
+	
 }

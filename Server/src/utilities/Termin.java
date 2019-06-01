@@ -8,36 +8,30 @@ public class Termin implements Serializable {
 	private int terminId;
 	private String terminInhaber;
 	private String terminName;
-	private String terminDate;
-	private String terminTime;
+	private Date dateTime;
 	
 	
 	public Termin() {
 		super();
 		this.terminId = 0;
 		this.terminInhaber = "";
-		this.terminDate = "";
-		this.terminTime = "";
 		this.terminName = "";
+		this.dateTime = null;		
 	}
 	
-
-	
-	public Termin(int terminId, String terminInhaber, String terminName, String terminDate, String terminTime) {
+	public Termin(int terminId, String terminInhaber, String terminName, Date dateTime) {
 		super();
 		this.terminId = terminId;
 		this.terminInhaber = terminInhaber;
 		this.terminName = terminName;
-		this.terminDate = terminDate;
-		this.terminTime = terminTime;
+		this.dateTime = dateTime;
 	}
 
-	public Termin(String terminInhaber, String terminDate, String terminTime, String terminName) {
+	public Termin(String terminInhaber, String terminName, Date dateTime) {
 		super();
 		this.terminInhaber = terminInhaber;
 		this.terminName = terminName;
-		this.terminDate = terminDate;
-		this.terminTime = terminTime;		
+		this.dateTime = dateTime;		
 	}
 
 	public int getTerminId() {
@@ -56,14 +50,6 @@ public class Termin implements Serializable {
 		this.terminInhaber = terminInhaber;
 	}
 
-	public String getTerminDate() {
-		return terminDate;
-	}
-
-	public void setTerminDate(String terminDate) {
-		this.terminDate = terminDate;
-	}
-
 	public String getTerminName() {
 		return terminName;
 	}
@@ -72,18 +58,17 @@ public class Termin implements Serializable {
 		this.terminName = terminName;
 	}
 
-	public String getTerminTime() {
-		return terminTime;
+	public Date getDateTime() {
+		return dateTime;
 	}
 
-	public void setTerminTime(String terminTime) {
-		this.terminTime = terminTime;
+	public void setDateTime(Date dateTime) {
+		this.dateTime = dateTime;
 	}
 
 	@Override
 	public String toString() {
 		return "Termin [terminId=" + terminId + ", terminInhaber=" + terminInhaber + ", terminName=" + terminName
-				+ ", terminDate=" + terminDate + ", terminTime=" + terminTime + "]\n";
+				+ ", dateTime=" + dateTime + "]\n";
 	}
-
 }

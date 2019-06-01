@@ -99,12 +99,17 @@ public class KalenderAppImp extends UnicastRemoteObject implements KalenderApp {
 
 	@Override
 	public boolean addTermin(Termin termin) throws RemoteException, Exception {		
-		
-		Termin null_test = MySqlConnetion.searchTermin(termin.getTerminId());
-		if(null_test == null) {			
+
+		User user = MySqlConnetion.searchUser(termin.getTerminInhaber(), "username");
+		if(user == null) {
+			System.out.println("Exp");
+			return false;
+		}
+		Termin termin1 = MySqlConnetion.searchTerminTime(termin.getTerminInhaber(), termin.getDateTime());
+		if(termin1 == null) {			
 			MySqlConnetion.insertTermin(termin);
 			return true;
-		}		
+		}
 		return false;
 	}
 
@@ -133,61 +138,61 @@ public class KalenderAppImp extends UnicastRemoteObject implements KalenderApp {
 	@Override
 	public List<Termin> getMyTermine(String username) throws RemoteException, Exception{
 		User user = MySqlConnetion.searchUser(username, "username");
-		if(user == null)
+		if(user == null) {
 			System.out.println("Exp");
-		
+			return null;
+		}
 		List<Termin> termine = MySqlConnetion.getTermineInhaber(username);
 		return termine;
 	}
 
 	@Override
-	public List<Termin> searchSpan(String date_von, String date_bis) throws RemoteException, Exception {
-		/*List<Termin> termine = MySqlConnetion.getTerminList();
-		List<Termin> termineReturn;
+	public List<Termin> searchSpan(Date date_von, Date date_bis, String terminInhaber) throws RemoteException, Exception {
+
+		List<Termin> termine = MySqlConnetion.getTermineInhaber(terminInhaber);
+		List<Termin> termineSpan = new ArrayList<Termin>();
 		
 		for(Termin termin : termine) {
-			termin.getTerminDate()
-		}*/
-		
-		
-		return null;
+			if(termin.getDateTime().after(date_von) && termin.getDateTime().before(date_bis))
+				termineSpan.add(termin);
+		}	
+		return termineSpan;
 	}
 
 	@Override
-	public boolean userEinladen(News news) throws RemoteException {
-//		String sender, String recipient, int terminId
-		/*User null_test = MySqlConnetion.searchUser(recipient, "username");
+	public boolean userEinladen(News news) throws Exception {
+		
+		User null_test = MySqlConnetion.searchUser(news.getRecipientUserName(), "username");
 		if(null_test == null) {
-			null_test = MySqlConnetion.searchUser(recipient, "email");
-			if(null_test == null) {
 				System.out.println("Exp");
 				return false;
-			}
 		}
 		
-		Termin termin = MySqlConnetion.searchTermin(terminId);
+		Termin termin = MySqlConnetion.searchTermin(news.getTerminId());
 		if(termin == null) {
-			MySqlConnetion.insertTermin(termin);
-			MySqlConnetion.insertNews(sender, recipient, terminId);
-			return true;
+			System.out.println("Exp");
+			return false;
 		}
-		else 
-			System.out.println("Exp");*/
-		
-		return false;
-	}
 
+		MySqlConnetion.insertNews(news);
+		return true;
+}
 
 	@Override
-	public ArrayList<News> getNews(User user) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<News> getNews(String username) throws Exception {
+		return MySqlConnetion.getNewsList(username);		
 	}
 
 	@Override
-	public boolean deleteNews(int newsId) throws RemoteException {
-		// TODO Auto-generated method stub
-		return false;
+	public void acceptNews(News news) throws RemoteException, Exception {		
+				
+		Termin termin = MySqlConnetion.searchTermin(news.getTerminId());
+		Termin neuTermin = new Termin(news.getRecipientUserName(), termin.getTerminName(), termin.getDateTime());
+		MySqlConnetion.insertTermin(neuTermin);		
 	}
 
+	@Override
+	public void refuseNews(News news) throws RemoteException, Exception {
+		MySqlConnetion.deleteNews(news.getNewsId());
+	}
 }
