@@ -15,7 +15,7 @@ public class test {
 
 	public static void main(String[] args) {
 		try {
-			User user = new User("samira","samira@gmail,com","zamri","ahmed", "123456");
+			
 //			MySqlConnetion.insertUser(user);			
 			/*User user1;
 			user1 = MySqlConnetion.searchUser("lufy","email");			
@@ -65,7 +65,7 @@ public class test {
 			
 			System.out.println(searchSpan(date1, date2, "superman"));*/
 			
-			News news = new News("eren","lufy", 1);
+//			News news = new News("eren","lufy", 1);
 //			System.out.println(userEinladen(news));
 			
 //			System.out.println(userEinladen(news));
@@ -76,13 +76,17 @@ public class test {
 			
 //			deleteNews(tab.get(0));
 			
-			System.out.println(getNewsRecipientList("sanji"));
+//			System.out.println(getNewsRecipientList("sanji"));
 			
-			int a = acceptNews(getNewsRecipientList("sanji").get(0));
-			System.out.println(a);
+//			int a = acceptNews(getNewsRecipientList("sanji").get(0));
+//			System.out.println(a);
+			
+//			System.out.println(emailValide("morad@gmailcom.ss"));
 			
 			
+			User user = new User("samira","neuemail@gmail,com","ne","morad", "12+3456");
 			
+			updateKonto(user, "passwort");
 			
 			
 		} catch (Exception e) {
@@ -224,5 +228,10 @@ public class test {
 		if(userReturn == null)
 			userReturn = MySqlConnetion.searchUser(user.getEmail(), "email");
 		return userReturn;
+	}
+	
+	public static boolean emailValide(String email) {
+		String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+		return email.matches(regex);
 	}
 }

@@ -25,6 +25,13 @@ public class News implements Serializable {
 		this.newsId = newsId;
 	}
 
+	public News(String senderUserName, String recipientUserName, int terminId) {
+		super();
+		this.senderUserName = senderUserName;
+		this.recipientUserName = recipientUserName;
+		this.terminId = terminId;
+	}
+	
 	public String getSenderUserName() {
 		return senderUserName;
 	}

@@ -29,5 +29,7 @@ public interface KalenderApp extends Remote {
 	public List<News> getNewsSenderList(String senderUsername) throws RemoteException, Exception;
 	public int acceptNews(News news) throws RemoteException, Exception;
 	public void deleteNews(News news) throws RemoteException, Exception;
+	
+	public boolean isEmailValide(String email)throws RemoteException;
 		
 }

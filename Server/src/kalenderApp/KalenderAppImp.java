@@ -204,6 +204,14 @@ public class KalenderAppImp extends UnicastRemoteObject implements KalenderApp {
 
 	@Override
 	public void deleteNews(News news) throws RemoteException, Exception {
+
 		MySqlConnetion.deleteNews(news.getNewsId());
 	} 
+
+	@Override
+	public boolean isEmailValide(String email) {
+		String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+		return email.matches(regex);
+	}
 }
+
