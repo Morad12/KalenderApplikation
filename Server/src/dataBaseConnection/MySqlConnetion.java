@@ -73,8 +73,8 @@ public class MySqlConnetion {
 		List<News> newstab = new ArrayList<News>();
 		Connection conn = getconnection();
 		PreparedStatement stam = conn.prepareStatement("SELECT * FROM news where recipient = ?");
-		ResultSet res = stam.executeQuery();
 		stam.setString(1, recipientUsername);
+		ResultSet res = stam.executeQuery();		
 		while(res.next()) {
 			int newsId = res.getInt("news_id");
 			String senderUserName = res.getString("sender");
@@ -91,8 +91,8 @@ public class MySqlConnetion {
 		List<News> newstab = new ArrayList<News>();
 		Connection conn = getconnection();
 		PreparedStatement stam = conn.prepareStatement("SELECT * FROM news where sender = ?");
-		ResultSet res = stam.executeQuery();
 		stam.setString(1, senderUsername);
+		ResultSet res = stam.executeQuery();		
 		while(res.next()) {
 			int newsId = res.getInt("news_id");
 			String senderUserName = res.getString("sender");
@@ -208,10 +208,10 @@ public class MySqlConnetion {
 		stam.setInt(2, terminId);
 		ResultSet res = stam.executeQuery();
 		if(res.next()) {
-			news.setNewsId(res.getInt("newsid"));
+			news.setNewsId(res.getInt("news_id"));
 			news.setSenderUserName(res.getString("sender"));
 			news.setRecipientUserName(res.getString("recipient"));
-			news.setTerminId(res.getInt("terminid"));
+			news.setTerminId(res.getInt("termin_id"));
 		}
 		else {
 			conn.close();

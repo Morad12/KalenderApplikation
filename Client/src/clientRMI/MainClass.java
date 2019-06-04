@@ -13,9 +13,6 @@ public class MainClass {
 		verbindungsfunktion();
 	}
 	
-	
-	
-	
 	public static KalenderApp verbindungsfunktion() {
 		KalenderApp stub = null;
 		try {

@@ -195,15 +195,15 @@ public class KalenderAppImp extends UnicastRemoteObject implements KalenderApp {
 	}
 
 	@Override
-	public void acceptNews(News news) throws RemoteException, Exception {		
+	public int acceptNews(News news) throws RemoteException, Exception {		
 				
 		Termin termin = MySqlConnetion.searchTermin(news.getTerminId());
 		Termin neuTermin = new Termin(news.getRecipientUserName(), termin.getTerminName(), termin.getDateTime());
-		MySqlConnetion.insertTermin(neuTermin);		
+		return addTermin(neuTermin);		
 	}
 
 	@Override
-	public void refuseNews(News news) throws RemoteException, Exception {
+	public void deleteNews(News news) throws RemoteException, Exception {
 		MySqlConnetion.deleteNews(news.getNewsId());
 	} 
 }
