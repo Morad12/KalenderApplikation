@@ -10,8 +10,20 @@ import kalenderApp.KalenderApp;
 public class MainClass {
 
 	public static void main(String[] args) {
-		verbindungsfunktion();
+		
+		try {
+			KalenderApp stub = verbindungsfunktion();
+			Menu menu = new Menu(stub);
+			
+			if(menu.Login_Menu())
+				menu.Menu_Logged();
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
+	
+	
+	
 	
 	public static KalenderApp verbindungsfunktion() {
 		KalenderApp stub = null;

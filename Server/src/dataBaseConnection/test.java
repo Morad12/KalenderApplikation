@@ -15,7 +15,7 @@ public class test {
 
 	public static void main(String[] args) {
 		try {
-			
+			MySqlConnetion.getconnection();
 //			MySqlConnetion.insertUser(user);			
 			/*User user1;
 			user1 = MySqlConnetion.searchUser("lufy","email");			
@@ -84,9 +84,9 @@ public class test {
 //			System.out.println(emailValide("morad@gmailcom.ss"));
 			
 			
-			User user = new User("samira","neuemail@gmail,com","ne","morad", "12+3456");
+			//User user = new User("samira","neuemail@gmail,com","ne","morad", "12+3456");
 			
-			updateKonto(user, "passwort");
+			System.out.println(MySqlConnetion.searchUser("aziz", "username").getUserName());
 			
 			
 		} catch (Exception e) {
