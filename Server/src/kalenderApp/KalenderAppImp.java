@@ -39,6 +39,7 @@ public class KalenderAppImp extends UnicastRemoteObject implements KalenderApp {
 			user = MySqlConnetion.searchUser(usernameORemail, "email");
 			if(user == null) {
 				System.out.println("Exiption user nicht gefunden(spaeter)");
+				return null;
 			}
 		}
 		if(user.getPasswort().equals(passwort)) {

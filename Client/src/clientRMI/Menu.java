@@ -4,15 +4,16 @@ package clientRMI;
 import java.util.Scanner;
 import java.io.Console;
 import kalenderApp.KalenderApp;
-import utilities.User;
+import utilities.*;
 
 public class Menu {
 
 
-	private static enum Login_Create{LOGIN, CREATE, EXIT};
-	private static enum Konto_Utilies{UPDATE, DELETE, ZURUECK};
-	private static enum Konto_Manage{PASSWORT, EMAIL, VORNAME, NACHNAME, ALLES, ZURUECK};
-	private static enum Logged_Utilities{KONTO, TERMIN, EXIT};
+	private static enum Login_Create{EXIT, LOGIN, CREATE};
+	private static enum News_Choice{WEITER, ANNEHMEN, ABLEHNEN};
+	private static enum Konto_Utilies{ZURUECK, UPDATE, DELETE}
+	private static enum Konto_Manage{ZURUECK, PASSWORT, EMAIL, VORNAME, NACHNAME, ALLES};
+	private static enum Logged_Utilities{EXIT, KONTO, TERMIN};
 	private static enum Ja_Nein{JA, NEIN};
 	private static User user;
 	private static Scanner s = new Scanner(System.in);
@@ -22,7 +23,7 @@ public class Menu {
 		
 	}
 	Menu(KalenderApp stub){
-		user = new User();
+		//user = new User();
 		Menu.stub = stub;
 	}
 	
@@ -33,10 +34,21 @@ public class Menu {
 		Menu.user = user;
 	}
 	
+	public static void HauptMenu() {
+		user = new User();
+		
+		try {
+			if(Login_Menu())
+				Menu_Logged();
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
 	public static boolean Login_Menu(){
 		
 		Console console = System.console();
-		String eingabe = "";
+		int eingabe = 0;
 		String userName = "";
 		String password = "";
 		char[] pwd = null;
@@ -44,21 +56,26 @@ public class Menu {
 		String nachName = "";
 		String email = "";
 		Login_Create input = null;
+		String confirm = null;
+		News_Choice choice = null;
 		Ja_Nein antwort = null;
 		
-		System.out.print("Wollen Sie sich loggen(login), ein Konto erstellen(create) oder Abbrechen(exit)? : ");
-		eingabe = s.next();
-		
-		
-		while(!eingabe.equalsIgnoreCase("login") &&
-				!eingabe.equalsIgnoreCase("create") &&
-				!eingabe.equalsIgnoreCase("exit")){
-			
-			System.out.print("Falsche Eingabe! Wiederholen: ");
-			eingabe = s.next();
-		}
-		input = Login_Create.valueOf(eingabe.toUpperCase());
 		try {
+			System.out.print("\nWollen Sie:\n"
+					+ "1. Login.\n"
+					+ "2. Konto erstellen.\n"
+					+ "0. Abbrechen.\n"
+					+ "Wählen Sie: ");
+			eingabe = s.nextInt();
+			
+			
+			while(eingabe < 0 || eingabe > 2){
+				
+				System.out.print("Falsche Eingabe! Wiederholen: ");
+				eingabe = s.nextInt();
+			}
+			input = Login_Create.values()[eingabe];
+			
 			switch(input) {
 			case LOGIN:
 				do {
@@ -75,19 +92,58 @@ public class Menu {
 					}
 					
 					if(user != null) {
-						System.out.println("Willkomen "+user.getNachname()+", Sie sind eingeloggen.");
+						System.out.println("\nWillkomen "+user.getNachname()+", Sie sind eingeloggen.");
+						System.out.print("Sie haben "+stub.getNewsRecipientList(user.getUserName()).size() + " Notification(s).\n"
+								+ "Wollien Sie die zeigen?(ja/nein): ");
+						confirm = s.next();
+						while(!confirm.equalsIgnoreCase("ja") &&
+								!confirm.equalsIgnoreCase("nein")){
+							
+							System.out.print("Falsche Eingabe! Wiederholen: ");
+							confirm = s.next();
+						}
+						
+						antwort = Ja_Nein.valueOf(confirm.toUpperCase());
+						
+						if(antwort == Ja_Nein.JA) {
+							for(News n : stub.getNewsRecipientList(user.getUserName())) {
+								System.out.println(n.toString());
+							}
+							
+							System.out.println("\nWollen Sie:\n"
+									+ "1. Annehmen.\n"
+									+ "2. Ablehnen.\n"
+									+ "0. Weiter.\n");
+							eingabe = s.nextInt();
+							while(eingabe < 0 || eingabe > 2){
+								
+								System.out.print("Falsche Eingabe! Wiederholen: ");
+								eingabe = s.nextInt();
+							}
+							
+							choice = News_Choice.values()[eingabe];
+							
+							switch(choice) {
+							case ANNEHMEN:
+								break;
+							case ABLEHNEN:
+								break;
+							case WEITER:
+								break;
+							}
+						}
 						return true;
 					}
 					else {
 						System.out.print("Das Login ist schiefgegangen! \nWollen Sie wieder versuchen(ja) oder abbrechen(nein)? : ");
-						eingabe = s.next();
-						while(!eingabe.equalsIgnoreCase("ja") &&
-								!eingabe.equalsIgnoreCase("nein")){
+						confirm = s.next();
+						while(!confirm.equalsIgnoreCase("ja") &&
+								!confirm.equalsIgnoreCase("nein")){
 							
 							System.out.print("Falsche Eingabe! Wiederholen: ");
-							eingabe = s.next();
+							confirm = s.next();
 						}
-						antwort = Ja_Nein.valueOf(eingabe.toUpperCase());
+						antwort = Ja_Nein.valueOf(confirm.toUpperCase());
 					}
 				}while(user == null && antwort != Ja_Nein.NEIN);
 				
@@ -120,19 +176,19 @@ public class Menu {
 					created = stub.creatKonto(user);
 					if(created) {
 						System.out.println("Das Konto is Created!");
-						System.out.println("Willkomen "+user.getNachname()+", Sie sind eingeloggen.");
+						System.out.println("\nWillkomen "+user.getNachname()+", Sie sind eingeloggen.");
 						return true;
 					}
 					else {
 						System.out.print("Die Erstellung des ist schiefgegangen! \nWollen Sie wieder versuchen(ja) oder abbrechen(nein)? : ");
-						eingabe = s.next();
-						while(!eingabe.equalsIgnoreCase("ja") &&
-								!eingabe.equalsIgnoreCase("nein")){
+						confirm = s.next();
+						while(!confirm.equalsIgnoreCase("ja") &&
+								!confirm.equalsIgnoreCase("nein")){
 							
 							System.out.print("Falsche Eingabe! Wiederholen: ");
-							eingabe = s.next();
+							confirm = s.next();
 						}
-						antwort = Ja_Nein.valueOf(eingabe.toUpperCase());
+						antwort = Ja_Nein.valueOf(confirm.toUpperCase());
 					}
 				
 				}while(!created && antwort != Ja_Nein.NEIN);
@@ -163,39 +219,44 @@ public class Menu {
 		String nachName = "";
 		String vorName = "";
 		String email = "";
-		String eingabe = "";
+		int eingabe = 0;
+		String confirm = null;
 		Konto_Utilies input = null;
 		Konto_Manage manage = null;
 		Ja_Nein antwort = null;
-		
-		System.out.print("Wollen Sie Ihr Konto bearbeiten(update), löschen(delete) oder zurück(zurueck): ");
-		eingabe = s.next();
-		
-		while(!eingabe.equalsIgnoreCase("update") &&
-				!eingabe.equalsIgnoreCase("delete") &&
-				!eingabe.equalsIgnoreCase("zurueck")){
-			
-			System.out.print("Falsche Eingabe! Wiederholen: ");
-			eingabe = s.next();
-		}
-		input = Konto_Utilies.valueOf(eingabe.toUpperCase());
 		try {
+			System.out.print("\nWollen Sie Ihr Konto: \n"
+					+ "1. Bearbeiten.\n"
+					+ "2. Löschen.\n"
+					+ "0. Zurück.\n"
+					+ "Wählen Sie: ");
+			eingabe = s.nextInt();
+			
+			while(eingabe < 0 && eingabe > 2){
+				
+				System.out.print("Falsche Eingabe! Wiederholen: ");
+				eingabe = s.nextInt();
+			}
+			input = Konto_Utilies.values()[eingabe];
+			
 			switch(input) {
 			case UPDATE:
-				System.out.print("Wollen Sie Passwort(passwort), Email(email), Nachname(nachname), Vorname(vorname), alles(alles) bearbeiten oder zurueck?: ");
-				eingabe = s.next();
+				System.out.print("\nWas Wollen Sie bearbeiten:\n"
+						+ "1. Passwort.\n"
+						+ "2. Email.\n"
+						+ "3. Nachname.\n"
+						+ "4. Vorname.\n"
+						+ "5. Alles.\n"
+						+ "0. Zuruck.\n"
+						+ "Wählen Sie: ");
+				eingabe = s.nextInt();
 				
-				while(!eingabe.equalsIgnoreCase("passwort") &&
-						!eingabe.equalsIgnoreCase("email") &&
-						!eingabe.equalsIgnoreCase("nachname") &&
-						!eingabe.equalsIgnoreCase("vorname") &&
-						!eingabe.equalsIgnoreCase("alles") &&
-						!eingabe.equalsIgnoreCase("zurueck")){
+				while(eingabe < 0 || eingabe > 5){
 					
 					System.out.print("Falsche Eingabe! Wiederholen: ");
-					eingabe = s.next();
+					eingabe = s.nextInt();
 				}
-					manage = Konto_Manage.valueOf(eingabe.toUpperCase());
+					manage = Konto_Manage.values()[eingabe];
 					
 					switch(manage) {
 					case PASSWORT:
@@ -243,62 +304,16 @@ public class Menu {
 					}
 					
 					System.out.print("Sind Sie sicher, dass Sie Ihr Konto bearbeiten wollen?(ja/nein): ");
-					eingabe = s.next();
-					while(!eingabe.equalsIgnoreCase("ja") &&
-							!eingabe.equalsIgnoreCase("nein")){
+					confirm = s.next();
+					while(!confirm.equalsIgnoreCase("ja") &&
+							!confirm.equalsIgnoreCase("nein")){
 						
 						System.out.print("Falsche Eingabe! Wiederholen: ");
-						eingabe = s.next();
+						confirm = s.next();
 					}
-					antwort = Ja_Nein.valueOf(eingabe.toUpperCase());
+					antwort = Ja_Nein.valueOf(confirm.toUpperCase());
 					
 					if(antwort == Ja_Nein.JA) {
-						
-						if(!passwort.isEmpty()){
-							user.setPasswort(passwort);
-							if(stub.updateKonto(user,"passwort") != null) {
-								System.out.println("User is updated!");
-								Konto_Menu();;
-						}
-						else
-							Konto_Menu();;
-						}
-						
-						if(!email.isEmpty()) {
-							System.out.println("Before: " +user.getUserName()+", "+user.getPasswort() + ", " + user.getNachname() + ", "+user.getVorname() + ", "+user.getEmail());
-							user.setEmail(email);
-							System.out.println("Before: " +user.getUserName()+", "+user.getPasswort() + ", " + user.getNachname() + ", "+user.getVorname() + ", "+user.getEmail());
-							
-							if(stub.updateKonto(user,"email") != null) {
-								System.out.println("User is updated!");
-								Konto_Menu();
-							}
-							else
-								Konto_Menu();
-						}
-						
-						if(!nachName.isEmpty()) {
-							System.out.println("Before: " +user.getUserName()+", "+user.getPasswort() + ", " + user.getNachname() + ", "+user.getVorname() + ", "+user.getEmail());
-							user.setNachname(nachName);
-							System.out.println("Before: " +user.getUserName()+", "+user.getPasswort() + ", " + user.getNachname() + ", "+user.getVorname() + ", "+user.getEmail());
-						
-							if(stub.updateKonto(user,"nachname") != null) {
-								System.out.println("User is updated!");
-								Konto_Menu();
-							}
-						else
-							Konto_Menu();
-						}
-						
-						if(!vorName.isEmpty()) {
-							user.setVorname(vorName);
-							if(stub.updateKonto(user,"vorname") != null) {
-								System.out.println("User is updated!");
-								Konto_Menu();
-							}
-						else
-							Konto_Menu();
-						}
 						
 						if(!passwort.isEmpty() && !email.isEmpty() && !nachName.isEmpty() && !vorName.isEmpty()) {
 							user.setPasswort(passwort);
@@ -308,32 +323,91 @@ public class Menu {
 							
 							if(stub.updateKonto(user,"email") != null && stub.updateKonto(user,"passwort") != null && stub.updateKonto(user,"vorname") != null && stub.updateKonto(user,"nachname") != null) {
 								System.out.println("User is updated!");
+								passwort = "";
+								email = "";
+								nachName = "";
+								vorName = "";
+								Menu_Logged();
+							}
+							else{
+								System.out.println("Update is failed");
 								Konto_Menu();
 							}
-							else
-								Konto_Menu();
 						}
-						else
+						
+						if(!passwort.isEmpty()){
+							user.setPasswort(passwort);
+							if(stub.updateKonto(user,"passwort") != null) {
+								System.out.println("User is updated!");
+								passwort = "";
+								Menu_Logged();
+							}
+							else {
+								System.out.println("Update is failed");
+								Konto_Menu();
+							}
+						}
+						
+						if(!email.isEmpty()) {
+							
+							user.setEmail(email);
+							
+							if(stub.updateKonto(user,"email") != null) {
+								System.out.println("User is updated!");
+								email = "";
+								Menu_Logged();
+							}
+							else{
+								System.out.println("Update is failed");
+								Konto_Menu();
+							}
+						}
+						
+						if(!nachName.isEmpty()) {
+							user.setNachname(nachName);
+							if(stub.updateKonto(user,"nachname") != null) {
+								System.out.println("User is updated!");
+								nachName = "";
+								Menu_Logged();
+							}
+							else{
+								System.out.println("Update is failed");
 							Konto_Menu();
+							}
+						}
+						
+						if(!vorName.isEmpty()) {
+							user.setVorname(vorName);
+							if(stub.updateKonto(user,"vorname") != null) {
+								System.out.println("User is updated!");
+								vorName = "";
+								Menu_Logged();
+							}
+							else{
+								System.out.println("Update is failed");
+								Konto_Menu();
+							}
+						}
 					}
 					else
 						Konto_Menu();
 					break;
 				case DELETE:
-					System.out.print("Sind Sie sicher, dass Sie Ihr Konto löschen wollen?: ");
-					eingabe = s.next();
-					while(!eingabe.equalsIgnoreCase("ja") &&
-							!eingabe.equalsIgnoreCase("nein")){
+					System.out.print("Sind Sie sicher, dass Sie Ihr Konto löschen wollen?(ja/nein): ");
+					confirm = s.next();
+					while(!confirm.equalsIgnoreCase("ja") &&
+							!confirm.equalsIgnoreCase("nein")){
 						
 						System.out.print("Falsche Eingabe! Wiederholen: ");
-						eingabe = s.next();
+						confirm = s.next();
 					}
-					antwort = Ja_Nein.valueOf(eingabe.toUpperCase());
+					antwort = Ja_Nein.valueOf(confirm.toUpperCase());
+					
 					if(antwort == Ja_Nein.JA) {
 						if(stub.deleteKonto(user)) {
 							System.out.println("Ihr Konto ist gelöscht");
-							System.out.println("Username: "+user.getUserName());
-							Login_Menu();
+							user = null;
+							HauptMenu();
 						}
 						else
 							System.out.println("Das Löschen ist schiefgegangen");
@@ -357,21 +431,24 @@ public class Menu {
 	}
 
 	public static void Menu_Logged() {
-		String eingabe = null;
+		int eingabe = 0;
 		Logged_Utilities input = null;
 		
-		System.out.print("Wollen Sie Ihr Konto(konto), Ihre Termine(termin) bearbeiten oder Abbrechen(exit)?: ");
-		eingabe = s.next();
-		
-		while(!eingabe.equalsIgnoreCase("konto") &&
-				!eingabe.equalsIgnoreCase("termin") &&
-				!eingabe.equalsIgnoreCase("exit")){
-			
-			System.out.print("Falsche Eingabe! Wiederholen: ");
-			eingabe = s.next();
-		}
-		input = Logged_Utilities.valueOf(eingabe.toUpperCase());
 		try {
+			System.out.print("\nWollen Sie:\n"
+					+ "1. Ihr Konto verwalten.\n"
+					+ "2. Ihre Termine verwalten.\n"
+					+ "0. Abbrechen.\n"
+					+ "Wählen Sie: ");
+			eingabe = s.nextInt();
+			
+			while(eingabe < 0 || eingabe > 2){
+				
+				System.out.print("Falsche Eingabe! Wiederholen: ");
+				eingabe = s.nextInt();
+			}
+			input = Logged_Utilities.values()[eingabe];
+		
 			switch(input) {
 			case KONTO:
 				Konto_Menu();

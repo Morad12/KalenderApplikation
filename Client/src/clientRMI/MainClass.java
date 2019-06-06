@@ -29,7 +29,7 @@ public class MainClass {
 		KalenderApp stub = null;
 		try {
 			stub = (KalenderApp) Naming.lookup("rmi://localhost:1099/KalenderApp");
-			System.out.println("verbunden...\n");
+			//System.out.println("verbunden...\n");
 		} catch (MalformedURLException | RemoteException | NotBoundException e) {
 			System.out.println(e.toString());
 		}
