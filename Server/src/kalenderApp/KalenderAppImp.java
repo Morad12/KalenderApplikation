@@ -204,9 +204,14 @@ public class KalenderAppImp extends UnicastRemoteObject implements KalenderApp {
 	}
 
 	@Override
-	public void deleteNews(News news) throws RemoteException, Exception {
+	public boolean deleteNews(News news) throws RemoteException, Exception {
 
 		MySqlConnetion.deleteNews(news.getNewsId());
+		if(MySqlConnetion.searchNews(news.getNewsId()) == null)
+			return true;
+		
+		return false;
+		
 	} 
 
 	@Override

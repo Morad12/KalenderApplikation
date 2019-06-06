@@ -1,6 +1,8 @@
 package clientRMI;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.io.Console;
 import kalenderApp.KalenderApp;
@@ -11,7 +13,8 @@ public class Menu {
 
 	private static enum Login_Create{EXIT, LOGIN, CREATE};
 	private static enum News_Choice{WEITER, ANNEHMEN, ABLEHNEN};
-	private static enum Konto_Utilies{ZURUECK, UPDATE, DELETE}
+	private static enum News_Utilities{ZURUECK, TERMIN, ALLES};
+	private static enum Konto_Utilities{ZURUECK, UPDATE, DELETE}
 	private static enum Konto_Manage{ZURUECK, PASSWORT, EMAIL, VORNAME, NACHNAME, ALLES};
 	private static enum Logged_Utilities{EXIT, KONTO, TERMIN};
 	private static enum Ja_Nein{JA, NEIN};
@@ -45,10 +48,155 @@ public class Menu {
 		}
 	}
 	
+	public static void Menu_News(String username) {
+		
+		String eingabe = null;
+		News_Choice choice = null;
+		News_Utilities accepted = null;
+		News_Utilities refused = null;
+		
+		try {
+			List<News> NewsRecipientList = stub.getNewsRecipientList(username);
+			
+			for(int i = 0; i < NewsRecipientList.size(); i++) {
+				System.out.println((i+1)+": "+ NewsRecipientList.get(i).toString());
+			}
+			System.out.print("\nWollen Sie:\n"
+					+ "1. Annehmen.\n"
+					+ "2. Ablehnen.\n"
+					+ "0. Weiter.\n"
+					+ "Wählen Sie: ");
+			eingabe = s.next();
+			while(!eingabe.equals("0") && 
+					!eingabe.equals("1") && 
+					!eingabe.equals("2")){
+				
+				System.out.print("Falsche Eingabe! Wiederholen: ");
+				eingabe = s.next();
+			}
+			
+			choice = News_Choice.values()[Integer.valueOf(eingabe)];
+			
+			switch(choice) {
+			case ANNEHMEN:
+				System.out.print("\nWollen Sie:\n"
+						+ "1. News wählen.\n"
+						+ "2. Alles annehmen.\n"
+						+ "0. Zurück.\n"
+						+ "Wählen Sie: ");
+				eingabe = s.next();
+				while(!eingabe.equals("0") && 
+						!eingabe.equals("1") && 
+						!eingabe.equals("2")){
+					
+					System.out.print("Falsche Eingabe! Wiederholen: ");
+					eingabe = s.next();
+				}
+				
+				accepted = News_Utilities.values()[Integer.valueOf(eingabe)];
+				
+				switch(accepted) {
+				case TERMIN:
+					System.out.print("Geben Sie Bitte die Zahl des News: ");
+					eingabe = s.next();
+					while(Integer.valueOf(eingabe) <= 0 || Integer.valueOf(eingabe) > NewsRecipientList.size()) {
+						System.out.print("Falsche Eingabe! Wiederholen: ");
+						eingabe = s.next();
+					}
+					
+					if(stub.acceptNews(NewsRecipientList.get(Integer.valueOf(eingabe)-1)) != -1){
+						System.out.println("Termin hinzugefügt");
+						Menu_Logged();
+					}
+					else {
+						System.out.println("Fehler ist eingetreten!");
+						Menu_Logged();
+					}
+					break;
+				case ALLES:
+					for(News n : NewsRecipientList) {
+						if(stub.acceptNews(n) != -1) {
+							System.out.println("Termine hinzugefügt");
+							Menu_Logged();
+						}
+						else
+						{
+							System.out.println("Fehler eingetreten");
+							Menu_Logged();
+						}
+					}
+					break;
+				case ZURUECK:
+					Menu_Logged();
+					break;
+				}
+				break;
+			case ABLEHNEN:
+				System.out.print("\nWollen Sie:\n"
+						+ "1. News wählen.\n"
+						+ "2. Alles ablehnen.\n"
+						+ "0. Zurück.\n"
+						+ "Wählen Sie: ");
+				eingabe = s.next();
+				while(!eingabe.equals("0") && 
+						!eingabe.equals("1") && 
+						!eingabe.equals("2")){
+					
+					System.out.print("Falsche Eingabe! Wiederholen: ");
+					eingabe = s.next();
+				}
+				
+				refused = News_Utilities.values()[Integer.valueOf(eingabe)];
+				
+				switch(refused) {
+				case TERMIN:
+					System.out.print("Geben Sie Bitte die Zahl des News: ");
+					eingabe = s.next();
+					while(Integer.valueOf(eingabe) <= 0 || Integer.valueOf(eingabe) > NewsRecipientList.size()) {
+						System.out.print("Falsche Eingabe! Wiederholen: ");
+						eingabe = s.next();
+					}
+					
+					if(stub.deleteNews(NewsRecipientList.get(Integer.valueOf(eingabe)-1))){
+						System.out.println("Termin abgelehnt");
+						Menu_Logged();
+					}
+					else {
+						System.out.println("Fehler eingetreten");
+						Menu_Logged();
+					}
+					break;
+				case ALLES:
+					for(News n : NewsRecipientList) {
+						if(stub.deleteNews(n)) {
+							System.out.println("Termin Abgelehnt");
+							Menu_Logged();
+						}
+						else
+						{
+							System.out.println("Fehler ist eingetreten");
+							Menu_Logged();
+						}
+					}
+					break;
+				case ZURUECK:
+					Menu_Logged();
+					break;
+				}
+				break;
+			case WEITER:
+				Menu_Logged();
+				break;
+			}
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
 	public static boolean Login_Menu(){
 		
 		Console console = System.console();
-		int eingabe = 0;
+		String eingabe = null;
 		String userName = "";
 		String password = "";
 		char[] pwd = null;
@@ -58,23 +206,28 @@ public class Menu {
 		Login_Create input = null;
 		String confirm = null;
 		News_Choice choice = null;
+		News_Utilities accepted = null;
 		Ja_Nein antwort = null;
+		List<News> NewsRecipientList = null;
 		
 		try {
+			
 			System.out.print("\nWollen Sie:\n"
 					+ "1. Login.\n"
 					+ "2. Konto erstellen.\n"
 					+ "0. Abbrechen.\n"
 					+ "Wählen Sie: ");
-			eingabe = s.nextInt();
+			eingabe = s.next();
 			
 			
-			while(eingabe < 0 || eingabe > 2){
+			while(!eingabe.equals("0") && 
+					!eingabe.equals("1") && 
+					!eingabe.equals("2")){
 				
 				System.out.print("Falsche Eingabe! Wiederholen: ");
-				eingabe = s.nextInt();
+				eingabe = s.next();
 			}
-			input = Login_Create.values()[eingabe];
+			input = Login_Create.values()[Integer.valueOf(eingabe)];
 			
 			switch(input) {
 			case LOGIN:
@@ -92,9 +245,10 @@ public class Menu {
 					}
 					
 					if(user != null) {
+						NewsRecipientList = stub.getNewsRecipientList(user.getUserName());
 						System.out.println("\nWillkomen "+user.getNachname()+", Sie sind eingeloggen.");
-						System.out.print("Sie haben "+stub.getNewsRecipientList(user.getUserName()).size() + " Notification(s).\n"
-								+ "Wollien Sie die zeigen?(ja/nein): ");
+						System.out.print("Sie haben "+NewsRecipientList.size() + " Notification(s).\n"
+								+ "\nWollen Sie die zeigen?(ja/nein): ");
 						confirm = s.next();
 						while(!confirm.equalsIgnoreCase("ja") &&
 								!confirm.equalsIgnoreCase("nein")){
@@ -106,32 +260,13 @@ public class Menu {
 						antwort = Ja_Nein.valueOf(confirm.toUpperCase());
 						
 						if(antwort == Ja_Nein.JA) {
-							for(News n : stub.getNewsRecipientList(user.getUserName())) {
-								System.out.println(n.toString());
-							}
-							
-							System.out.println("\nWollen Sie:\n"
-									+ "1. Annehmen.\n"
-									+ "2. Ablehnen.\n"
-									+ "0. Weiter.\n");
-							eingabe = s.nextInt();
-							while(eingabe < 0 || eingabe > 2){
-								
-								System.out.print("Falsche Eingabe! Wiederholen: ");
-								eingabe = s.nextInt();
-							}
-							
-							choice = News_Choice.values()[eingabe];
-							
-							switch(choice) {
-							case ANNEHMEN:
-								break;
-							case ABLEHNEN:
-								break;
-							case WEITER:
-								break;
-							}
+							/*for(News n : stub.getNewsRecipientList(user.getUserName())) {
+								System.out.println(stub.getNewsRecipientList(user.getUserName())+""+n.toString());
+							}*/
+							Menu_News(user.getUserName());
 						}
+						else
+							Menu_Logged();
 						return true;
 					}
 					else {
@@ -177,6 +312,28 @@ public class Menu {
 					if(created) {
 						System.out.println("Das Konto is Created!");
 						System.out.println("\nWillkomen "+user.getNachname()+", Sie sind eingeloggen.");
+						NewsRecipientList = stub.getNewsRecipientList(user.getUserName());
+						System.out.println("\nWillkomen "+user.getNachname()+", Sie sind eingeloggen.");
+						System.out.print("Sie haben "+NewsRecipientList.size() + " Notification(s).\n"
+								+ "\nWollen Sie die zeigen?(ja/nein): ");
+						confirm = s.next();
+						while(!confirm.equalsIgnoreCase("ja") &&
+								!confirm.equalsIgnoreCase("nein")){
+							
+							System.out.print("Falsche Eingabe! Wiederholen: ");
+							confirm = s.next();
+						}
+						
+						antwort = Ja_Nein.valueOf(confirm.toUpperCase());
+						
+						if(antwort == Ja_Nein.JA) {
+							/*for(News n : stub.getNewsRecipientList(user.getUserName())) {
+								System.out.println(stub.getNewsRecipientList(user.getUserName())+""+n.toString());
+							}*/
+							Menu_News(user.getUserName());
+						}
+						else
+							Menu_Logged();
 						return true;
 					}
 					else {
@@ -219,9 +376,9 @@ public class Menu {
 		String nachName = "";
 		String vorName = "";
 		String email = "";
-		int eingabe = 0;
+		String eingabe = null;
 		String confirm = null;
-		Konto_Utilies input = null;
+		Konto_Utilities input = null;
 		Konto_Manage manage = null;
 		Ja_Nein antwort = null;
 		try {
@@ -230,14 +387,16 @@ public class Menu {
 					+ "2. Löschen.\n"
 					+ "0. Zurück.\n"
 					+ "Wählen Sie: ");
-			eingabe = s.nextInt();
+			eingabe = s.next();
 			
-			while(eingabe < 0 && eingabe > 2){
+			while(!eingabe.equals("0") && 
+					!eingabe.equals("1") && 
+					!eingabe.equals("2")){
 				
 				System.out.print("Falsche Eingabe! Wiederholen: ");
-				eingabe = s.nextInt();
+				eingabe = s.next();
 			}
-			input = Konto_Utilies.values()[eingabe];
+			input = Konto_Utilities.values()[Integer.valueOf(eingabe)];
 			
 			switch(input) {
 			case UPDATE:
@@ -249,14 +408,19 @@ public class Menu {
 						+ "5. Alles.\n"
 						+ "0. Zuruck.\n"
 						+ "Wählen Sie: ");
-				eingabe = s.nextInt();
+				eingabe = s.next();
 				
-				while(eingabe < 0 || eingabe > 5){
+				while(!eingabe.equals("0") && 
+						!eingabe.equals("1") && 
+						!eingabe.equals("2") &&						
+						!eingabe.equals("3") && 
+						!eingabe.equals("4") && 
+						!eingabe.equals("5")){
 					
 					System.out.print("Falsche Eingabe! Wiederholen: ");
-					eingabe = s.nextInt();
+					eingabe = s.next();
 				}
-					manage = Konto_Manage.values()[eingabe];
+					manage = Konto_Manage.values()[Integer.valueOf(eingabe)];
 					
 					switch(manage) {
 					case PASSWORT:
@@ -431,7 +595,7 @@ public class Menu {
 	}
 
 	public static void Menu_Logged() {
-		int eingabe = 0;
+		String eingabe = "";
 		Logged_Utilities input = null;
 		
 		try {
@@ -440,14 +604,16 @@ public class Menu {
 					+ "2. Ihre Termine verwalten.\n"
 					+ "0. Abbrechen.\n"
 					+ "Wählen Sie: ");
-			eingabe = s.nextInt();
+			eingabe = s.next();
 			
-			while(eingabe < 0 || eingabe > 2){
+			while(!eingabe.equals("0") &&
+					!eingabe.equals("1") &&
+					!eingabe.equals("2")){
 				
 				System.out.print("Falsche Eingabe! Wiederholen: ");
-				eingabe = s.nextInt();
+				eingabe = s.next();
 			}
-			input = Logged_Utilities.values()[eingabe];
+			input = Logged_Utilities.values()[Integer.valueOf(eingabe)];
 		
 			switch(input) {
 			case KONTO:
