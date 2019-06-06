@@ -1,7 +1,7 @@
 package clientRMI;
 
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Scanner;
 import java.io.Console;
@@ -205,8 +205,6 @@ public class Menu {
 		String email = "";
 		Login_Create input = null;
 		String confirm = null;
-		News_Choice choice = null;
-		News_Utilities accepted = null;
 		Ja_Nein antwort = null;
 		List<News> NewsRecipientList = null;
 		

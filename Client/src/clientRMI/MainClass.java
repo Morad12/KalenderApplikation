@@ -15,8 +15,8 @@ public class MainClass {
 			KalenderApp stub = verbindungsfunktion();
 			Menu menu = new Menu(stub);
 			
-			if(menu.Login_Menu())
-				menu.Menu_Logged();
+			menu.HauptMenu();
+			
 		}catch(Exception e) {
 			System.out.println(e.getMessage());
 		}
